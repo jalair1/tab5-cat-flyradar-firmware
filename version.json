@@ -1,8 +1,8 @@
 {
-  "version": "1.15",
-  "build": 115,
-  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_15.bin",
-  "size": 1504528,
-  "md5": "bbd8363b9cb37d20aba2dcd3c072c0e8",
-  "notes": "Proeve paa opdatering over Wi-Fi. Samme funktioner som 1.14."
+  "version": "1.16",
+  "build": 116,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_16.bin",
+  "size": 1504976,
+  "md5": "23bdf1039bb3733faf1d21ee89d7085c",
+  "notes": "Wi-Fi-skaermen laaser ikke laengere, mens den leder efter netvaerk."
 }
