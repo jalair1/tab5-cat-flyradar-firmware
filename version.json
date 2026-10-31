@@ -1,8 +1,8 @@
 {
-  "version": "1.13",
-  "build": 113,
-  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_13.bin",
-  "size": 1502544,
-  "md5": "65cef10d06df55b89324ab9b2ed4c94d",
-  "notes": "Fotos af flyene virker nu. Tryk paa et fly i listen vaelger det (rute-streg paa radaren), tryk igen for detaljesiden."
+  "version": "1.15",
+  "build": 115,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_15.bin",
+  "size": 1504528,
+  "md5": "bbd8363b9cb37d20aba2dcd3c072c0e8",
+  "notes": "Proeve paa opdatering over Wi-Fi. Samme funktioner som 1.14."
 }
