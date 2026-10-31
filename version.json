@@ -1,0 +1,8 @@
+{
+  "version": "1.12",
+  "build": 112,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_12.bin",
+  "size": 1496704,
+  "md5": "ea4a3eea56600badba17a3b00d2cb766",
+  "notes": "Opdatering over Wi-Fi."
+}
