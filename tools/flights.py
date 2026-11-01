@@ -22,18 +22,36 @@ def get(url, binary=False, api=False):
     return d if binary else d.decode('utf-8', 'replace')
 
 # ---------------------------------------------------------------- flåden og transponder-koder
-fleet = [r.strip().upper() for r in json.load(open('fleet.json'))['fleet']]
+fj = json.load(open('fleet.json'))
+fleet = [r.strip().upper() for r in fj['fleet']]
 log('Flaade:', len(fleet), 'fly')
 hexmap = {}
+# 1) gemte koder fra tidligere kørsler, 2) koder skrevet i fleet.json ("hex": {"OY-ABC": "45abcd"})
+try: cache = json.load(open('hexcache.json'))
+except Exception: cache = {}
+for r, h in list(cache.items()) + list((fj.get('hex') or {}).items()):
+    if r.upper() in fleet and h: hexmap[r.upper()] = (h.strip().lower(), '')
 try:
     db = gzip.decompress(get('https://raw.githubusercontent.com/wiedehopf/tar1090-db/csv/aircraft.csv.gz', binary=True)).decode('utf-8', 'replace')
     want = set(fleet)
     for line in db.splitlines():
         f = line.split(';')
-        if len(f) > 2 and f[1].strip().upper() in want:
+        if len(f) > 2 and f[1].strip().upper() in want and f[1].strip().upper() not in hexmap:
             hexmap[f[1].strip().upper()] = (f[0].strip().lower(), f[2].strip())
 except Exception as e:
     log('Flydatabase-fejl:', e)
+# 3) fly der sender lige nu (adsb.lol live)
+miss = [r for r in fleet if r not in hexmap]
+if miss:
+    try:
+        live = json.loads(get('https://api.adsb.lol/v2/reg/' + ','.join(miss)))
+        for ac in live.get('ac', []):
+            r = (ac.get('r') or '').upper()
+            if r in miss: hexmap[r] = (ac['hex'].lower(), ac.get('t', ''))
+    except Exception as e:
+        log('adsb.lol live-fejl:', e)
+for r, (h, t) in hexmap.items(): cache[r] = h
+json.dump(dict(sorted(cache.items())), open('hexcache.json', 'w'), indent=1)
 log('Transponder-koder fundet:', len(hexmap), 'af', len(fleet))
 for r in fleet:
     if r not in hexmap: log('  mangler kode for', r)
@@ -116,11 +134,15 @@ for day in days:
             for p in tr.get('trace', []):
                 if len(p) < 4 or p[1] is None: continue
                 alt = p[3]
-                ground = alt == 'ground'
+                gs = p[4] if len(p) > 4 else None
+                flags = p[6] if len(p) > 6 and isinstance(p[6], int) else 0
+                # på jorden: meldt "ground", eller langsom og lav / uden højde
+                ground = alt == 'ground' or (gs is not None and gs < 50 and (alt is None or alt < 2000))
+                if alt is None and not ground: continue           # ukendt højde: spring over
                 call = ''
                 if len(p) > 8 and isinstance(p[8], dict):
                     call = (p[8].get('flight') or '').strip()
-                lst.append((base + p[0], p[1], p[2], None if ground or alt is None else alt, ground, call))
+                lst.append((base + p[0], p[1], p[2], None if ground else alt, ground, call, bool(flags & 2)))
     log('  spor fundet for', found, 'fly')
     got_days.append(day.isoformat())
 
@@ -144,12 +166,12 @@ for hx, pts in points.items():
             'dep': int(ft), 'arr': int(lt), 'sec': int(dur), 'nm': round(f['nmkm'] / 1.852),
         })
     for p in pts:
-        t, la, lo, alt, ground, call = p
+        t, la, lo, alt, ground, call, newleg = p
         if cur and last:
             gap = t - last[0]
             low = last[3] is None or last[3] < 3000
-            if ground or gap > 3 * 3600 or (gap > 20 * 60 and low):
-                cur['landed'] = ground or (gap > 20 * 60 and low)
+            if ground or newleg or gap > 3 * 3600 or (gap > 20 * 60 and low):
+                cur['landed'] = ground or (gap > 20 * 60 and low) or (newleg and low)
                 close(cur, last); cur = None
         if not ground and alt is not None:
             if not cur:
@@ -162,6 +184,25 @@ for hx, pts in points.items():
     if cur:
         cur['landed'] = False
         close(cur, last)
+# Ukendt lufthavn (ingen dækning): brug ruten for kaldesignalet (adsb.lol's rutefiler)
+routes = {}
+def route(call):
+    if call in routes: return routes[call]
+    r = None
+    try:
+        d = json.loads(get(f'https://vrs-standing-data.adsb.lol/routes/{call[:2]}/{call}.json'))
+        aps = d.get('_airports') or []
+        if len(aps) >= 2: r = (aps[0].get('icao', ''), aps[-1].get('icao', ''))
+    except Exception:
+        pass
+    routes[call] = r
+    return r
+for f in flights:
+    if f['call'] and (not f['from'] or not f['to']):
+        r = route(f['call'])
+        if r:
+            if not f['from']: f['from'] = r[0]
+            if not f['to']: f['to'] = r[1]
 flights.sort(key=lambda f: (f['dep'], f['reg']))
 log('Flyvninger:', len(flights))
 
