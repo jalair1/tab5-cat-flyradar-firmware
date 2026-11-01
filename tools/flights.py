@@ -148,6 +148,7 @@ for day in days:
 
 # ---------------------------------------------------------------- del sporene op i flyvninger
 flights = []
+win_start = datetime(days[0].year, days[0].month, days[0].day, tzinfo=timezone.utc).timestamp()
 for hx, pts in points.items():
     reg, typ = hex2reg[hx]
     pts.sort()
@@ -157,6 +158,8 @@ for hx, pts in points.items():
         if not f: return
         dur = f['last'][0] - f['first'][0]
         if dur < 300 or f['nmkm'] < 5: return            # for kort: støj
+        # startede før de 2 døgn (højt oppe lige ved midnat): den er med i forrige kørsel
+        if f['first'][3] is not None and f['first'][3] >= 4000 and f['first'][0] - win_start < 900: return
         lt, la, lo, alt = f['last'][0], f['last'][1], f['last'][2], f['last'][3]
         ft, fa, fo, falt = f['first'][0], f['first'][1], f['first'][2], f['first'][3]
         flights.append({
@@ -204,6 +207,14 @@ for f in flights:
             if not f['from']: f['from'] = r[0]
             if not f['to']: f['to'] = r[1]
 flights.sort(key=lambda f: (f['dep'], f['reg']))
+# Stadig ukendt: brug forrige landing / næste start for samme fly (inden for 24 timer)
+byreg = {}
+for f in flights: byreg.setdefault(f['reg'], []).append(f)
+for lst in byreg.values():
+    for a, b in zip(lst, lst[1:]):
+        if b['dep'] - a['arr'] > 86400: continue
+        if not b['from'] and a['to']: b['from'] = a['to']
+        if not a['to'] and b['from']: a['to'] = b['from']
 log('Flyvninger:', len(flights))
 
 out = {'generated': datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%MZ'), 'days': got_days, 'flights': flights}
