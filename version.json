@@ -1,8 +1,8 @@
 {
-  "version": "1.18",
-  "build": 118,
-  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_18.bin",
-  "size": 1511072,
-  "md5": "dd7bc01eda5b0b5292d4a6958c97bedb",
-  "notes": "Fleet list from GitHub (fleet.json), new STATS tab, flight progress bar, 10 rows in the airborne list."
+  "version": "1.19",
+  "build": 119,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_19.bin",
+  "size": 1579936,
+  "md5": "ac1b5b27808fa4e8371ff6ea9fc9f3cb",
+  "notes": "STATS for today, 7 and 30 days. Tap any aircraft on FLEET for photo and last flight."
 }
