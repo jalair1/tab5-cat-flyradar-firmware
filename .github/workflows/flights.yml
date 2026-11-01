@@ -1,0 +1,39 @@
+# Henter flådens flyvninger fra de sidste 2 døgn (adsb.lol's historik) til flights.json.
+name: Flyvninger
+
+on:
+  schedule:
+    - cron: '17 5 * * *'
+    - cron: '17 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  flights:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Hent flyvninger
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 tools/flights.py
+      - name: Gem flights.json
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git add flights.json 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Flyvninger $(date -u +%Y-%m-%d)"
+            git push origin HEAD:main
+          fi
+          # log til grenen "log", så den kan læses uden at åbne Actions
+          cp /tmp/flights_log.txt /tmp/l.txt
+          git checkout --orphan log
+          git rm -rf --quiet . || true
+          cp /tmp/l.txt flights_log.txt
+          git add flights_log.txt
+          git commit -m "Log $(date -u +%Y-%m-%dT%H:%M)"
+          git push --force origin log
