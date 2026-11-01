@@ -1,8 +1,8 @@
 {
-  "version": "1.17",
-  "build": 117,
-  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_17.bin",
-  "size": 1504912,
-  "md5": "eb7131e8cf126e922469f3300c535ec4",
-  "notes": "All on-screen text is now in English."
+  "version": "1.18",
+  "build": 118,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_18.bin",
+  "size": 1511072,
+  "md5": "dd7bc01eda5b0b5292d4a6958c97bedb",
+  "notes": "Fleet list from GitHub (fleet.json), new STATS tab, flight progress bar, 10 rows in the airborne list."
 }
