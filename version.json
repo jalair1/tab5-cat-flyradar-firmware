@@ -1,8 +1,8 @@
 {
-  "version": "1.19",
-  "build": 119,
-  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_19.bin",
-  "size": 1579936,
-  "md5": "ac1b5b27808fa4e8371ff6ea9fc9f3cb",
-  "notes": "STATS for today, 7 and 30 days. Tap any aircraft on FLEET for photo and last flight."
+  "version": "1.20",
+  "build": 120,
+  "bin": "https://raw.githubusercontent.com/jalair1/tab5-cat-flyradar-firmware/main/firmware/Tab5_CAT_Flyradar_v1_20.bin",
+  "size": 1583808,
+  "md5": "1c84a673b65bb5a4401485fd4e374390",
+  "notes": "Range up to 2000 NM. Distances and directions on the radar are now correct far away too."
 }
