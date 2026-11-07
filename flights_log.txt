@@ -1,0 +1,17 @@
+Flaade: 25 fly
+Transponder-koder fundet: 19 af 25
+  mangler kode for OY-CDB
+  mangler kode for OY-CAC
+  mangler kode for OY-OCM
+  mangler kode for OY-LKI
+  mangler kode for OY-DME
+  mangler kode for OY-ASH
+Lufthavne: 19173
+2026-11-05 v2026.11.05-planes-readsb-prod-0 [('v2026.11.05-planes-readsb-prod-0.tar.aa', 2.0), ('v2026.11.05-planes-readsb-prod-0.tar.ab', 1.8)]
+  hentet og pakket ud paa 19 s
+  spor fundet for 8 fly
+2026-11-06 v2026.11.06-planes-readsb-prod-0 [('v2026.11.06-planes-readsb-prod-0.tar.aa', 2.0), ('v2026.11.06-planes-readsb-prod-0.tar.ab', 1.82)]
+  hentet og pakket ud paa 13 s
+  spor fundet for 8 fly
+Flyvninger: 46
+flights.json skrevet
